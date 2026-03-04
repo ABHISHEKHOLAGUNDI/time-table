@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="The Grind Tracker — 24hr schedule enforcer, A/B PPL workout tracker & diet companion." />
+  <meta name="theme-color" content="#b8f247" />
+
+  <title>The Grind Tracker</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ============================================
+       APP CONTAINER
+       ============================================ -->
+  <div class="app-container">
+
+    <!-- ========== HEADER ========== -->
+    <header class="app-header">
+      <h1>🔥 THE GRIND TRACKER</h1>
+      <p class="tagline">50 kg → 70 kg · Discipline is freedom.</p>
+    </header>
+
+    <!-- ========== STATS BAR ========== -->
+    <section class="stats-bar" id="statsBar">
+      <!-- Streak -->
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value" id="streakCount">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <!-- Tasks Done Today -->
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="tasksDone">0/12</div>
+        <div class="stat-label">Blocks Done</div>
+      </div>
+      <!-- Current Time -->
+      <div class="stat-card">
+        <div class="stat-icon">🕐</div>
+        <div class="stat-value" id="currentTime">--:--</div>
+        <div class="stat-label">Current Time</div>
+      </div>
+    </section>
+
+    <!-- ========== NAVIGATION TABS ========== -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-tab="schedule">📅 Schedule</button>
+      <button class="nav-tab" data-tab="progress">📈 Progress</button>
+      <button class="nav-tab" data-tab="reminders">🔔 Reminders</button>
+      <button class="nav-tab" data-tab="settings">⚙️ Settings</button>
+    </nav>
+
+    <!-- ============================================
+         TAB 1: SCHEDULE / TIMETABLE
+         ============================================ -->
+    <section class="tab-content active" id="tab-schedule">
+      <h2 class="section-title"><span class="icon">📋</span> Today's Schedule</h2>
+
+      <div class="timetable" id="timetable">
+
+        <!-- 07:30 AM — Pre-Workout Meal (EXPANDABLE) -->
+        <div class="time-block expandable" data-category="meal" data-start="07:30" data-end="08:00"
+          data-block-id="pre_workout_meal">
+          <div class="block-header">
+            <span class="block-time">07:30 AM</span>
+            <span class="block-icon">🍳</span>
+            <div class="block-info">
+              <div class="block-label">Pre-Workout Meal</div>
+              <div class="block-detail">Oats, 2 Eggs, Dates</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="meal-detail-grid">
+                <div class="meal-item">🥣 1 serving Protein Oats</div>
+                <div class="meal-item">🥚 2 Whole Eggs (boiled/scrambled)</div>
+                <div class="meal-item">🌴 Handful of Dates</div>
+              </div>
+              <p class="meal-tip">💡 Eat 60-90 mins before gym so it digests. The dates give you instant energy for
+                heavy lifts.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 08:00 AM — DSA Block 1 -->
+        <div class="time-block expandable" data-category="study" data-start="08:00" data-end="09:00"
+          data-block-id="dsa_block_1">
+          <div class="block-header">
+            <span class="block-time">08:00 AM</span>
+            <span class="block-icon">💻</span>
+            <div class="block-info">
+              <div class="block-label">DSA Block 1</div>
+              <div class="block-detail">Video Concepts — 1 hr</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <p class="expand-placeholder">Details will be added here…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 09:00 AM — GYM -->
+        <div class="time-block expandable" data-category="gym" data-start="09:00" data-end="10:00" data-block-id="gym">
+          <div class="block-header">
+            <span class="block-time">09:00 AM</span>
+            <span class="block-icon">🏋️</span>
+            <div class="block-info">
+              <div class="block-label">GYM</div>
+              <div class="block-detail">A/B PPL Split — today's workout auto-loaded</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <!-- JS will inject today's workout exercises here -->
+              <div id="gymExpandContent">
+                <p class="expand-placeholder">Loading today's workout…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10:15 AM — Post-Workout Shake -->
+        <div class="time-block expandable" data-category="meal" data-start="10:00" data-end="11:00"
+          data-block-id="post_workout_shake">
+          <div class="block-header">
+            <span class="block-time">10:00 AM</span>
+            <span class="block-icon">🥤</span>
+            <div class="block-info">
+              <div class="block-label">Post-Workout Shake</div>
+              <div class="block-detail">Plant Protein, Fruit, 5g Creatine</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="meal-detail-grid">
+                <div class="meal-item">🥛 1 scoop Plant Protein in water</div>
+                <div class="meal-item">🍌 1 Seasonal Fruit (Banana/Apple)</div>
+              </div>
+              <p class="meal-tip">💡 5g Creatine — mix it right into the protein shake.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11:00 AM — Data Science Deep Work -->
+        <div class="time-block expandable" data-category="study" data-start="11:00" data-end="14:00"
+          data-block-id="data_science">
+          <div class="block-header">
+            <span class="block-time">11:00 AM</span>
+            <span class="block-icon">📊</span>
+            <div class="block-info">
+              <div class="block-label">Data Science Deep Work</div>
+              <div class="block-detail">Focus session — 3 hrs</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <p class="expand-placeholder">Details will be added here…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02:00 PM — Lunch -->
+        <div class="time-block expandable" data-category="meal" data-start="14:00" data-end="15:00"
+          data-block-id="lunch">
+          <div class="block-header">
+            <span class="block-time">02:00 PM</span>
+            <span class="block-icon">🍛</span>
+            <div class="block-info">
+              <div class="block-label">Lunch</div>
+              <div class="block-detail">Rice/Chapati, Dal, Salad + Fish Oil/Vitamin</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="meal-detail-grid">
+                <div class="meal-item">🍚 Big portion of Rice or 4-5 Chapatis</div>
+                <div class="meal-item">🍲 Dal or Veggies</div>
+                <div class="meal-item">🥒 Cucumber & Carrot Salad</div>
+              </div>
+              <p class="meal-tip">💊 Fish Oil (alternate days) · Multivitamin (alternate months). Fats in the meal help
+                absorb the vitamins.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03:00 PM — Free Time -->
+        <div class="time-block expandable" data-category="free" data-start="15:00" data-end="17:00"
+          data-block-id="free_time">
+          <div class="block-header">
+            <span class="block-time">03:00 PM</span>
+            <span class="block-icon">🎮</span>
+            <div class="block-info">
+              <div class="block-label">Free Time</div>
+              <div class="block-detail">Relax, hobbies — 2 hrs</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <p class="expand-placeholder">Details will be added here…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05:00 PM — Web Dev Build Phase -->
+        <div class="time-block expandable" data-category="code" data-start="17:00" data-end="19:00"
+          data-block-id="web_dev">
+          <div class="block-header">
+            <span class="block-time">05:00 PM</span>
+            <span class="block-icon">🌐</span>
+            <div class="block-info">
+              <div class="block-label">Web Dev Build Phase</div>
+              <div class="block-detail">Full-stack practice — 2 hrs</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div id="webDevContent">
+                <p class="expand-placeholder">Loading course info…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 07:00 PM — Evening Snack -->
+        <div class="time-block expandable" data-category="meal" data-start="18:00" data-end="19:30"
+          data-block-id="evening_snack">
+          <div class="block-header">
+            <span class="block-time">06:00 PM</span>
+            <span class="block-icon">🥜</span>
+            <div class="block-info">
+              <div class="block-label">Evening Snack</div>
+              <div class="block-detail">Protein Oats, 40-50g Peanuts</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="meal-detail-grid">
+                <div class="meal-item">🥣 1 serving Protein Oats</div>
+                <div class="meal-item">🥜 40-50g Peanuts</div>
+              </div>
+              <p class="meal-tip">⚠️ Crucial step — do NOT skip this while studying. Your body needs these calories to
+                keep growing before dinner.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 07:30 PM — DSA Block 2 -->
+        <div class="time-block expandable" data-category="study" data-start="19:30" data-end="21:00"
+          data-block-id="dsa_block_2">
+          <div class="block-header">
+            <span class="block-time">07:30 PM</span>
+            <span class="block-icon">⌨️</span>
+            <div class="block-info">
+              <div class="block-label">DSA Block 2</div>
+              <div class="block-detail">Practice / Coding — 1.5 hrs</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="leetcode-input-container"
+                style="background: rgba(30,30,42,0.5); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;">
+                <h4 style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px;">📊 Log Today's LeetCode
+                </h4>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span style="color:#00b8a3; font-weight:600; font-size:0.9rem;">Easy</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="btnLcEasyMinus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">-</button>
+                    <span id="txtLcEasy"
+                      style="width:20px; text-align:center; font-family:'Outfit'; font-weight:600;">0</span>
+                    <button id="btnLcEasyPlus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">+</button>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span style="color:#ffc01e; font-weight:600; font-size:0.9rem;">Medium</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="btnLcMedMinus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">-</button>
+                    <span id="txtLcMed"
+                      style="width:20px; text-align:center; font-family:'Outfit'; font-weight:600;">0</span>
+                    <button id="btnLcMedPlus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">+</button>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <span style="color:#ff375f; font-weight:600; font-size:0.9rem;">Hard</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="btnLcHardMinus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">-</button>
+                    <span id="txtLcHard"
+                      style="width:20px; text-align:center; font-family:'Outfit'; font-weight:600;">0</span>
+                    <button id="btnLcHardPlus"
+                      style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:4px; width:24px; height:24px; cursor:pointer;">+</button>
+                  </div>
+                </div>
+                <button id="btnSaveLeetcode"
+                  style="width:100%; padding:10px; border-radius:4px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); color:#fff; border:none; font-family:'Outfit'; font-weight:600; cursor:pointer;">Save
+                  Today's Progress</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10:00 PM — Dinner -->
+        <div class="time-block expandable" data-category="meal" data-start="22:00" data-end="23:00"
+          data-block-id="dinner">
+          <div class="block-header">
+            <span class="block-time">10:00 PM</span>
+            <span class="block-icon">🍽️</span>
+            <div class="block-info">
+              <div class="block-label">Dinner</div>
+              <div class="block-detail">2 Eggs, Rice/Chapati, Veggies</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <div class="meal-detail-grid">
+                <div class="meal-item">🥚 2 Whole Eggs (omelet/bhurji)</div>
+                <div class="meal-item">🍚 4-5 Chapatis or Rice</div>
+                <div class="meal-item">🥦 Veggies / Sabzi</div>
+              </div>
+              <p class="meal-tip">💡 Carbs at night help you sleep deeply, which is when your muscles actually rebuild.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11:00 PM — Sleep -->
+        <div class="time-block expandable" data-category="sleep" data-start="23:00" data-end="07:30"
+          data-block-id="sleep">
+          <div class="block-header">
+            <span class="block-time">11:00 PM</span>
+            <span class="block-icon">😴</span>
+            <div class="block-info">
+              <div class="block-label">Sleep</div>
+              <div class="block-detail">8 hrs target — recovery is gains</div>
+            </div>
+            <span class="block-chevron">▾</span>
+            <button class="block-check" title="Mark complete">✓</button>
+          </div>
+          <div class="block-expand-content">
+            <div class="expand-inner">
+              <p class="expand-placeholder">Details will be added here…</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /timetable -->
+    </section>
+
+    <!-- ============================================
+         TAB 2: PROGRESS (Charts)
+         ============================================ -->
+    <section class="tab-content" id="tab-progress">
+      <h2 class="section-title"><span class="icon">📈</span> Progress Tracker</h2>
+
+      <!-- GitHub-style Activity Calendar -->
+      <div class="progress-chart-card grind-calendar-card">
+        <div class="chart-card-header">
+          <span class="chart-card-icon">🟩</span>
+          <div>
+            <h3 class="chart-card-title">Grind Calendar</h3>
+            <p class="chart-card-subtitle" id="calendarSubtitle">Your daily consistency heatmap</p>
+          </div>
+        </div>
+        <div class="grind-calendar-wrapper">
+          <div class="grind-calendar-months" id="calendarMonths"></div>
+          <div class="grind-calendar-body">
+            <div class="grind-calendar-days">
+              <span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span>
+            </div>
+            <div class="grind-calendar-grid" id="grindCalendarGrid"></div>
+          </div>
+        </div>
+        <div class="grind-calendar-footer">
+          <span class="grind-total" id="grindTotal"></span>
+          <div class="grind-legend">
+            <span>Less</span>
+            <div class="legend-cell" style="background: var(--cal-0);"></div>
+            <div class="legend-cell" style="background: var(--cal-1);"></div>
+            <div class="legend-cell" style="background: var(--cal-2);"></div>
+            <div class="legend-cell" style="background: var(--cal-3);"></div>
+            <div class="legend-cell" style="background: var(--cal-4);"></div>
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body Measurement Analytics (Replaces Workout Bar) -->
+      <div class="progress-chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-icon">💪</span>
+          <div>
+            <h3 class="chart-card-title">Body Measurement Analytics</h3>
+            <p class="chart-card-subtitle">Monthly growth: Chest, Biceps, Weight, etc.</p>
+          </div>
+        </div>
+
+        <!-- Add Measurements Form -->
+        <div style="margin-top: 10px; margin-bottom: 20px;">
+          <button id="btnOpenMeasurementModal"
+            style="width: 100%; background: rgba(30,30,42,0.8); border: 1px dashed var(--accent-lime); color: var(--accent-lime); cursor: pointer; padding: 12px; border-radius: var(--radius-md); font-family: 'Outfit'; font-weight: 600; font-size: 0.9rem; transition: var(--transition);">
+            ➕ Add New Measurement
+          </button>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="bodyStatsChart"></canvas>
+        </div>
+        <div class="chart-legend" id="bodyStatsChartLegend">Last updated: Mar 1, 2026</div>
+      </div>
+
+      <!-- DSA LeetCode Analytics -->
+      <div class="progress-chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-icon">💻</span>
+          <div>
+            <h3 class="chart-card-title">LeetCode Analytics</h3>
+            <p class="chart-card-subtitle">DSA Problem Solving: Easy, Medium, Hard</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="leetcodeChart"></canvas>
+        </div>
+        <div class="chart-legend" id="leetcodeChartLegend">Problems Solved (Mock Data)</div>
+      </div>
+
+      <!-- Course Progress (3 Different Circles) -->
+      <div class="progress-chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-icon">📊</span>
+          <div>
+            <h3 class="chart-card-title">Course Analytics</h3>
+            <p class="chart-card-subtitle">Individual progress for your 3 active courses</p>
+          </div>
+        </div>
+        <div class="chart-wrapper course-circles-wrapper"
+          style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; min-height: 180px;">
+          <div style="position: relative; width: 100%; height: 100%;">
+            <canvas id="dsCircleChart"></canvas>
+            <div
+              style="position: absolute; top: 120%; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+              Data Science</div>
+          </div>
+          <div style="position: relative; width: 100%; height: 100%;">
+            <canvas id="wdCircleChart"></canvas>
+            <div
+              style="position: absolute; top: 120%; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+              Web Dev</div>
+          </div>
+          <div style="position: relative; width: 100%; height: 100%;">
+            <canvas id="dsaCircleChart"></canvas>
+            <div
+              style="position: absolute; top: 120%; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+              DSA Course</div>
+          </div>
+        </div>
+        <div class="chart-legend" id="courseChartLegend"
+          style="margin-top: 36px; line-height: 1.6; text-align: center;"></div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         TAB 3: REMINDERS
+         ============================================ -->
+    <section class="tab-content" id="tab-reminders">
+      <h2 class="section-title"><span class="icon">🔔</span> Reminders & Notes</h2>
+
+      <!-- Reminder input form -->
+      <div class="reminder-form">
+        <h3>📝 New Reminder</h3>
+        <div class="form-row">
+          <input type="text" class="form-input" id="reminderNote" placeholder="What do you need to remember?"
+            maxlength="200" />
+        </div>
+        <div class="form-row">
+          <input type="datetime-local" class="form-datetime" id="reminderDatetime" />
+          <button class="btn-save-reminder" id="btnSaveReminder">
+            Save 🔔
+          </button>
+        </div>
+      </div>
+
+      <!-- Upcoming reminders list -->
+      <h3 class="section-title" style="font-size:1.05rem; margin-top:8px;">
+        <span class="icon">📌</span> Upcoming
+      </h3>
+      <div class="reminder-list" id="reminderList">
+        <div class="no-reminders" id="noReminders">
+          No reminders yet. Add one above! ☝️
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         TAB 4: SETTINGS (Supabase Config)
+         ============================================ -->
+    <section class="tab-content" id="tab-settings">
+      <h2 class="section-title"><span class="icon">⚙️</span> Settings</h2>
+
+      <!-- Supabase connection panel -->
+      <div class="config-panel">
+        <h3>🔗 Supabase Connection</h3>
+        <div class="form-row">
+          <input type="text" class="form-input" id="supabaseUrl"
+            placeholder="Supabase Project URL (https://xxx.supabase.co)" />
+        </div>
+        <div class="form-row">
+          <input type="text" class="form-input" id="supabaseKey" placeholder="Supabase Anon Key" />
+        </div>
+        <button class="btn-connect" id="btnConnect">Connect to Supabase</button>
+        <div class="connection-status" id="connectionStatus">
+          <span class="dot" id="connectionDot"></span>
+          <span id="connectionLabel">Not connected</span>
+        </div>
+      </div>
+
+      <!-- Notification permission -->
+      <div class="config-panel" style="border-color: rgba(184, 242, 71, 0.15);">
+        <h3 style="color: var(--accent-lime);">🔔 Notifications</h3>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
+          Enable push notifications so you never miss a reminder.
+        </p>
+        <button class="btn-connect" id="btnEnableNotifs"
+          style="background: linear-gradient(135deg, var(--accent-lime), var(--accent-cyan)); color: var(--bg-primary);">
+          Enable Notifications
+        </button>
+        <div class="connection-status" id="notifStatus">
+          <span class="dot" id="notifDot"></span>
+          <span id="notifLabel">Permission not granted</span>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /app-container -->
+
+  <!-- ============================================
+       NOTIFICATION MODAL (in-app popup)
+       ============================================ -->
+  <div class="modal-overlay" id="reminderModal">
+    <div class="modal-card">
+      <div class="modal-icon">🔔</div>
+      <div class="modal-title" id="modalTitle">Reminder!</div>
+      <div class="modal-body" id="modalBody">Your note will appear here.</div>
+      <button class="btn-modal-dismiss" id="btnDismissModal">Got it ✓</button>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MEASUREMENT MODAL (in-app popup)
+       ============================================ -->
+  <div class="modal-overlay" id="measurementModal">
+    <div class="modal-card" style="max-width: 320px;">
+      <div class="modal-icon">💪</div>
+      <div class="modal-title">Add Measurement</div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; margin-top: 12px;">
+          <input type="month" class="form-datetime" id="measureMonth" style="width: 100%; padding: 12px;" />
+          <input type="number" step="0.1" class="form-input" id="measureWeight" placeholder="Weight (kg)"
+            style="width: 100%; padding: 12px;" />
+          <input type="number" step="0.1" class="form-input" id="measureChest" placeholder="Chest (in)"
+            style="width: 100%; padding: 12px;" />
+          <input type="number" step="0.1" class="form-input" id="measureBiceps" placeholder="Biceps (in)"
+            style="width: 100%; padding: 12px;" />
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn-modal-dismiss" id="btnCancelMeasurement"
+          style="background: rgba(255,255,255,0.05); color: #fff; flex: 1; border: 1px solid rgba(255,255,255,0.1);">Cancel</button>
+        <button class="btn-modal-dismiss" id="btnSaveMeasurement"
+          style="background: var(--accent-lime); color: var(--bg-primary); flex: 1;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       TOAST CONTAINER
+       ============================================ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============================================
+       SCRIPTS
+       ============================================ -->
+  <!-- Chart.js (CDN) for Progress charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  <!-- Supabase JS Client (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- App logic (Step 3) -->
+  <script src="app.js"></script>
+
+</body>
+
+</html>
