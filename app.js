@@ -622,7 +622,7 @@ async function fetchReminders() {
   listEl.querySelectorAll('.btn-delete-reminder').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
-      const { error } = await supabaseClientClient.from('reminders').delete().eq('id', id);
+      const { error } = await supabaseClient.from('reminders').delete().eq('id', id);
       if (!error) {
         showToast('🗑️', 'Reminder deleted.');
         fetchReminders();
