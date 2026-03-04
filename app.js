@@ -1083,43 +1083,58 @@ function initProgressCharts() {
 
     if (bodyChartInstance) bodyChartInstance.destroy();
 
+    const metricSelector = document.getElementById('metricSelector');
+    const selectedMetric = metricSelector ? metricSelector.value : 'weight';
+
+    const datasetsConf = {
+      'weight': {
+        label: 'Weight (kg)',
+        data: weightData,
+        borderColor: '#b8f247', // lime
+        backgroundColor: 'rgba(184, 242, 71, 0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#b8f247'
+      },
+      'chest': {
+        label: 'Chest (in)',
+        data: chestData,
+        borderColor: '#60a5fa', // blue
+        backgroundColor: 'rgba(96, 165, 250, 0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#60a5fa'
+      },
+      'biceps': {
+        label: 'Biceps (in)',
+        data: bicepsData,
+        borderColor: '#f472b6', // pink
+        backgroundColor: 'rgba(244, 114, 182, 0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#f472b6'
+      }
+    };
+
     bodyChartInstance = new Chart(bCtx, {
       type: 'line',
       data: {
         labels: labels,
-        datasets: [
-          {
-            label: 'Weight (kg)',
-            data: weightData,
-            borderColor: '#b8f247', // lime
-            backgroundColor: 'rgba(184, 242, 71, 0.1)',
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Chest (in)',
-            data: chestData,
-            borderColor: '#60a5fa', // blue
-            backgroundColor: 'transparent',
-            tension: 0.4
-          },
-          {
-            label: 'Biceps (in)',
-            data: bicepsData,
-            borderColor: '#f472b6', // pink
-            backgroundColor: 'transparent',
-            tension: 0.4
-          }
-        ]
+        datasets: [datasetsConf[selectedMetric]]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+          legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, color: '#e2e8f0' } }
         },
         scales: {
-          y: { beginAtZero: false } // measurements don't start at 0
+          x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: {
+            beginAtZero: false,
+            ticks: { color: '#94a3b8' },
+            grid: { color: 'rgba(255,255,255,0.05)' }
+          } // measurements don't start at 0, allows auto-scaling for small changes
         }
       }
     });
@@ -1129,6 +1144,13 @@ function initProgressCharts() {
       bodyLegend.textContent = `Last updated: ${labels[labels.length - 1]}`;
     }
   };
+
+  const metricSelector = document.getElementById('metricSelector');
+  if (metricSelector) {
+    metricSelector.addEventListener('change', () => {
+      renderBodyChart();
+    });
+  }
 
   renderBodyChart();
 
