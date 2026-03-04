@@ -497,7 +497,7 @@ renderTodaysWorkout();
 let supabaseClient = null;
 
 // ★ Hardcoded credentials — auto-connect on load
-const SUPABASE_URL = 'https://lvwjfjvybpvbulpgkdbm.supabaseClient.co';
+const SUPABASE_URL = 'https://lvwjfjvybpvbulpgkdbm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2d2pmanZ5YnB2YnVscGdrZGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzY3OTYsImV4cCI6MjA4ODIxMjc5Nn0._GkU2_ePiU_6yldbfcJifSHFmqgG3QjlTulfMRYNLts';
 
 /** Initialize the supabaseClient client */
@@ -558,7 +558,7 @@ document.getElementById('btnSaveReminder').addEventListener('click', async () =>
     return;
   }
 
-  const { error } = await supabaseClientClient
+  const { error } = await supabaseClient
     .from('reminders')
     .insert([{ note: note, reminder_time: new Date(dt).toISOString() }]);
 
@@ -576,7 +576,7 @@ document.getElementById('btnSaveReminder').addEventListener('click', async () =>
 async function fetchReminders() {
   if (!supabaseClient) return;
 
-  const { data, error } = await supabaseClientClient
+  const { data, error } = await supabaseClient
     .from('reminders')
     .select('*')
     .order('reminder_time', { ascending: true });
@@ -652,7 +652,7 @@ async function checkReminders() {
 
   const now = new Date().toISOString();
 
-  const { data, error } = await supabaseClientClient
+  const { data, error } = await supabaseClient
     .from('reminders')
     .select('*')
     .eq('is_triggered', false)
@@ -675,7 +675,7 @@ async function checkReminders() {
     }
 
     // 3. Mark as triggered in supabaseClient
-    await supabaseClientClient
+    await supabaseClient
       .from('reminders')
       .update({ is_triggered: true })
       .eq('id', rem.id);
@@ -941,7 +941,7 @@ function renderCourseBlockInfo() {
   }
 
   // --- DSA Block 1 (Lecture — 1hr) ---
-  const dsa1El = getExpandEl('dsa_block_1');
+  const dsa1El = document.getElementById('dsa1CourseProgress') || getExpandEl('dsa_block_1');
   if (dsa1El) {
     dsa1El.innerHTML = `
       <div class="course-progress-mini">
@@ -959,7 +959,7 @@ function renderCourseBlockInfo() {
   }
 
   // --- DSA Block 2 (Practice — 1.5hrs) ---
-  const dsa2El = getExpandEl('dsa_block_2');
+  const dsa2El = document.getElementById('dsa2CourseProgress') || getExpandEl('dsa_block_2');
   if (dsa2El) {
     dsa2El.innerHTML = `
       <div class="course-progress-mini">
@@ -1412,9 +1412,11 @@ async function initGrindCalendar() {
     const span = document.createElement('span');
     span.textContent = month;
     span.style.position = 'absolute';
-    // 32px is the width of the weekday labels column, 16px is cell width + gap
-    span.style.left = `${32 + (weekIdx * 16)}px`;
-    span.style.fontSize = '0.7rem';
+    // 28px is the width of the weekday labels column, 16px is cell width + gap
+    // Use smaller font and ensure first month isn't pushed too far
+    span.style.left = `${28 + (weekIdx * 16)}px`;
+    span.style.fontSize = '0.65rem';
+    span.style.fontWeight = '600';
     span.style.color = 'var(--text-muted)';
     monthsContainer.appendChild(span);
   }

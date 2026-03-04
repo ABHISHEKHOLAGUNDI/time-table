@@ -567,14 +567,14 @@ body::before {
 .cal-cell::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(100% + 8px);
+  left: 0;
+  transform: translateX(0);
   background: var(--bg-card);
   color: var(--text-primary);
   font-size: 0.68rem;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
